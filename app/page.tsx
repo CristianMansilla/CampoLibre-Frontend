@@ -1,65 +1,107 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
+import AuthCard from '@/componentes/auth/auth-card';
+
+export default function HomePage() {
+  const router = useRouter();
+  const { user, initialized } = useAuth();
+
+  if (!initialized) {
+    return (
+      <main className="min-h-screen flex items-center justify-center bg-slate-950">
+        <p className="text-white/70">Cargando...</p>
+      </main>
+    );
+  }
+  if (user) {
+    return (
+      <main className="min-h-screen bg-slate-950">
+        <div className="max-w-6xl mx-auto px-6 py-14">
+          <div className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl p-10">
+            <div className="flex items-center gap-4">
+              <div className="relative w-12 h-12">
+                <Image
+                  src="/campolibre-logo.png"
+                  alt="CampoLibre"
+                  fill
+                  className="object-contain"
+                  priority
+                />
+              </div>
+              <div>
+                <p className="text-white font-semibold leading-tight">CampoLibre</p>
+                <p className="text-white/70 text-sm">Reservas deportivas</p>
+              </div>
+            </div>
+
+            <div className="mt-8 flex items-center justify-between flex-wrap gap-3">
+              <p className="text-white/80">
+                Hola, <span className="font-semibold">{user.email}</span> ({user.rol})
+              </p>
+              <button
+                onClick={() => router.push('/dashboard')}
+                className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-5 py-3"
+              >
+                Ir al dashboard
+              </button>
+            </div>
+          </div>
         </div>
       </main>
-    </div>
+    );
+  }
+
+  return (
+    <main className="min-h-screen bg-slate-950 relative overflow-hidden">
+      <div
+        className="absolute inset-0 -z-10 bg-cover bg-center opacity-35"
+        style={{ backgroundImage: "url('/hero.png')" }}
+      />
+      <div className="absolute -top-40 -left-40 h-96 w-96 rounded-full bg-emerald-500/20 blur-3xl -z-10" />
+      <div className="absolute -bottom-40 -right-40 h-96 w-96 rounded-full bg-cyan-500/20 blur-3xl -z-10" />
+
+      <div className="max-w-6xl mx-auto px-6 py-8 lg:py-14">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-stretch">
+          <div className="flex">
+            <div className="w-full max-w-lg">
+              <AuthCard />
+            </div>
+          </div>
+
+          <div className="flex">
+            <div className="w-full rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl p-7 sm:p-8 flex flex-col">
+              <p className="text-white/70 text-sm">CampoLibre</p>
+
+              <h2 className="text-4xl font-bold text-white mt-2 leading-tight">
+                Reservá tu cancha <span className="text-white/80">en minutos.</span>
+              </h2>
+
+              <p className="text-white/70 mt-4 max-w-xl">
+                Elegí cancha, definí horario y confirmá. Panel claro para clientes y gestión simple para operadores.
+              </p>
+
+              <div className="grid grid-cols-3 gap-3 mt-6">
+                {['Canchas', 'Reservas', 'Admin'].map((t) => (
+                  <div
+                    key={t}
+                    className="rounded-2xl border border-white/10 bg-white/5 p-4"
+                  >
+                    <p className="text-white font-semibold">{t}</p>
+                    <p className="text-white/70 text-sm mt-1">Gestión simple</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-auto pt-5 text-xs text-white/55">
+                Ideal para complejos deportivos y clubes.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
   );
 }
